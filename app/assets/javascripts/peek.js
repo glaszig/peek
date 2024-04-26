@@ -5,7 +5,7 @@ var requestId;
 requestId = null;
 
 (function($) {
-  var fetchRequestResults, getRequestId, initializeTipsy, peekEnabled, toggleBar, updatePerformanceBar;
+  var fetchRequestResults, getRequestId, initializeTipsy, peekEnabled, toggleBar, updatePerformanceBar, triggerUpdate;
   getRequestId = function() {
     if (requestId != null) {
       return requestId;
@@ -62,6 +62,11 @@ requestId = null;
       error: function(xhr, textStatus, error) {}
     });
   };
+  triggerUpdate = function() {
+    if (peekEnabled()) {
+      return $(this).trigger('peek:update');
+    }
+  };
   $(document).on('keypress', toggleBar);
   $(document).on('peek:update', initializeTipsy);
   $(document).on('peek:update', fetchRequestResults);
@@ -69,18 +74,8 @@ requestId = null;
     if (xhr != null) {
       requestId = xhr.getResponseHeader('X-Request-Id');
     }
-    if (peekEnabled()) {
-      return $(this).trigger('peek:update');
-    }
+    triggerUpdate.call(this);
   });
-  $(document).on('page:change turbolinks:load turbo:load', function() {
-    if (peekEnabled()) {
-      return $(this).trigger('peek:update');
-    }
-  });
-  return $(function() {
-    if (peekEnabled()) {
-      return $(this).trigger('peek:update');
-    }
-  });
+  $(document).on('page:change turbolinks:load turbo:load', triggerUpdate);
+  return $(triggerUpdate);
 })(jQuery);
