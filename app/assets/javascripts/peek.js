@@ -73,7 +73,7 @@ requestId = null;
       return $(this).trigger('peek:update');
     }
   });
-  $(document).on('page:change turbolinks:load', function() {
+  $(document).on('page:change turbolinks:load turbo:load', function() {
     if (peekEnabled()) {
       return $(this).trigger('peek:update');
     }
